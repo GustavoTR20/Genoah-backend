@@ -14,7 +14,8 @@ app.post("/subscriptions", async (req, res) => {
             name: req.body.serviceName,
             email: req.body.accountEmail,
             age: req.body.monthlyPrice,
-            category: req.body.category
+            category: req.body.category,
+            status: req.body.status
         }
     });
 
@@ -29,7 +30,8 @@ app.get("/subscriptions", async (req, res) => {
         serviceName: subscription.name,
         accountEmail: subscription.email,
         monthlyPrice: subscription.age, 
-        category: subscription.category
+        category: subscription.category,
+        status: subscription.status
     }));
 
     res.status(200).json(formattedSubscriptions);
