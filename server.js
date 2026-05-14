@@ -4,65 +4,60 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 const app = express();
-app.use(express.json())
-app.use(cors())
 
-app.post("/usuarios", async (req, res) => {
+app.use(express.json());
+app.use(cors());
 
-    await prisma.user.create({
+app.post("/subscriptions", async (req, res) => {
+    const subscription = await prisma.user.create({
         data: {
-            name: req.body.name,
-            email: req.body.email,
-            age: req.body.age
+            name: req.body.serviceName,
+            email: req.body.accountEmail,
+            age: req.body.monthlyPrice
         }
-    })
+    });
 
-    res.status(201).json(req.body)
-})
+    res.status(201).json(subscription);
+});
 
-app.get("/usuarios", async (req, res) => {
-    let users = []
+app.get("/subscriptions", async (req, res) => {
+    const subscriptions = await prisma.user.findMany();
 
-    if (req.query){
-        users = await prisma.user.findMany({
-            where: {
-                name: req.query.name,
-                email: req.query.email,
-                age: req.query.age
-            }
-        })  
-    }else {
-    users = await prisma.user.findMany()
-    }
+    const formattedSubscriptions = subscriptions.map((subscription) => ({
+        id: subscription.id,
+        serviceName: subscription.name,
+        accountEmail: subscription.email,
+        monthlyPrice: subscription.age
+    }));
 
-    res.status(200).json(users)
-})
+    res.status(200).json(formattedSubscriptions);
+});
 
-app.put("/usuarios/:id", async (req, res) => {
-
-    await prisma.user.update({
+app.put("/subscriptions/:id", async (req, res) => {
+    const subscription = await prisma.user.update({
         where: {
             id: req.params.id
         },
         data: {
-            name: req.body.name,
-            email: req.body.email,
-            age: req.body.age
+            name: req.body.serviceName,
+            email: req.body.accountEmail,
+            age: req.body.monthlyPrice
         }
-    })
+    });
 
-    res.status(201).json(req.body)
-})
+    res.status(200).json(subscription);
+});
 
-app.delete("/usuarios/:id", async (req, res) => {
-
+app.delete("/subscriptions/:id", async (req, res) => {
     await prisma.user.delete({
         where: {
             id: req.params.id
         }
-    })
-    res.status(200).json({ message: "Usuário deletado com sucesso!" })
-})
+    });
 
+    res.status(200).json({ message: "Subscription deleted successfully!" });
+});
 
-app.listen(3000)  
+app.listen(3000, () => {
+    console.log("Server is running on port 3000");
+});
