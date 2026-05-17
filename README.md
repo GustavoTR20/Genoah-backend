@@ -104,7 +104,7 @@ https://github.com/GustavoTR20/Genoah-frontend
 
 The backend API is deployed and can be accessed at:
 
-https://your-backend-api-link.com
+https://genoah-frontend.onrender.com/
 
 ---
 
